@@ -1,0 +1,154 @@
+{
+  "theme": "light",
+  "archetype": "SWISS & HIGH-CONTRAST",
+  "typography": {
+    "headings": {
+      "font": "Manrope",
+      "weight": "font-bold",
+      "tracking": "tracking-tight",
+      "usage": "Use for all dashboard page titles, card headers, and large metric numbers. Provides an authoritative, crisp look."
+    },
+    "body": {
+      "font": "IBM Plex Sans",
+      "weight": "font-normal",
+      "tracking": "tracking-normal",
+      "usage": "Use for all data tables, logs, input labels, tooltips, and body text. Highly legible for dense data."
+    }
+  },
+  "colors": {
+    "primary": {
+      "hex": "#0f172a",
+      "tailwind": "slate-900",
+      "usage": "Primary structural elements, main headings."
+    },
+    "accent": {
+      "hex": "#2563eb",
+      "tailwind": "blue-600",
+      "usage": "Action buttons (NFC scan, Add vehicle, Authorize fuel)."
+    },
+    "background": {
+      "light": "#f8fafc",
+      "dark": "#020617",
+      "usage": "Main application background."
+    },
+    "surface": {
+      "light": "#ffffff",
+      "dark": "#0f172a",
+      "border": "border-slate-200 dark:border-slate-800",
+      "usage": "Card backgrounds, modals, tables."
+    },
+    "status": {
+      "success": "text-green-600 bg-green-50",
+      "warning": "text-yellow-600 bg-yellow-50",
+      "error": "text-red-600 bg-red-50"
+    }
+  },
+  "grids_and_layouts": {
+    "dashboard_grid": "High Density Grid. Base Grid: grid-cols-1 md:grid-cols-3 lg:grid-cols-4. Tight gaps (gap-4 or gap-6).",
+    "widget_ratios": "Summary: col-span-1. Primary Chart: col-span-2 or col-span-3. List/Feed: col-span-1 row-span-2.",
+    "padding": "Generous padding inside containers. Use p-6 or p-8 inside cards to prevent text collision."
+  },
+  "surface_strategies": {
+    "cards": "Grid Borders: Expose the skeleton. Data-heavy dashboards use flat backgrounds with 1px subtle borders (border-border), max 8px border-radius, no shadow by default. Hover: slight lift, subtle shadow.",
+    "modals": "Solid backgrounds with sharp borders and subtle backdrop-blur for overlays.",
+    "headers": "Solid background (never fully transparent) with a hard bottom border for fixed or sticky navigation headers. Ensure z-50."
+  },
+  "components": {
+    "buttons": "Slightly rounded (max 8px). High contrast on hover (hover:bg-blue-700 hover:text-white). Active state must clearly show.",
+    "forms": "Use Shadcn Form, Input, Select. Never use native html inputs.",
+    "tables": "Dense rows. Left-align text, right-align numbers. Subtle hover states on rows (hover:bg-slate-50).",
+    "charts": "Use Recharts or Shadcn charts. Use monospace fonts for numeric axes.",
+    "toasts": "Use Sonner for alerts (e.g., Fraud alert, NFC scan success, offline sync)."
+  },
+  "motion": {
+    "interactions": "Micro-interactions for hover/focus (transition-transform duration-200).",
+    "entrance": "Staggered entrance animations for list items.",
+    "nfc_scan": "Pulsing animation (animate-pulse) for the NFC scanning state/modal."
+  },
+  "accessibility": {
+    "contrast": "Text must meet WCAG AA (4.5:1 ratio). Ensure hover/focus states have higher contrast.",
+    "testing": "All interactive elements MUST have a data-testid attribute in kebab-case, role-based. Example: data-testid='nfc-scan-button'."
+  },
+  "visual_enhancers": {
+    "icons": "Phosphor Icons (@phosphor-icons/react) for dense data clarity.",
+    "empty_states": "Do not show blank charts; display a Call to Action (CTA) or subtle illustration."
+  },
+  "image_urls": {
+    "vehicles": [
+      {
+        "url": "https://images.unsplash.com/photo-1652081848323-5f425c65c2c7?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NDh8MHwxfHNlYXJjaHw0fHxmbGVldCUyMG1hbmFnZW1lbnQlMjB0cnVja3MlMjBjYXJzfGVufDB8fHxibHVlfDE3ODQzNzQxMjd8MA&ixlib=rb-4.1.0&q=85",
+        "description": "White truck for fleet listing",
+        "category": "vehicles"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1592891024301-bf7948cee673?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NDh8MHwxfHNlYXJjaHwxfHxmbGVldCUyMG1hbmFnZW1lbnQlMjB0cnVja3MlMjBjYXJzfGVufDB8fHxibHVlfDE3ODQzNzQxMjd8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Black fleet car",
+        "category": "vehicles"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1585063644107-c681be21b50c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NDh8MHwxfHNlYXJjaHwzfHxmbGVldCUyMG1hbmFnZW1lbnQlMjB0cnVja3MlMjBjYXJzfGVufDB8fHxibHVlfDE3ODQzNzQxMjd8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Blue pickup truck",
+        "category": "vehicles"
+      }
+    ],
+    "drivers": [
+      {
+        "url": "https://images.pexels.com/photos/4391223/pexels-photo-4391223.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Driver portrait male",
+        "category": "drivers"
+      },
+      {
+        "url": "https://images.pexels.com/photos/7144208/pexels-photo-7144208.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Driver portrait female inside car",
+        "category": "drivers"
+      }
+    ],
+    "fueling": [
+      {
+        "url": "https://images.unsplash.com/photo-1644246905181-c3753e9a82bd?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzJ8MHwxfHNlYXJjaHwxfHxnYXMlMjBzdGF0aW9uJTIwcHVtcCUyMGZ1ZWx8ZW58MHx8fHwxNzg0Mzc0MTM5fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Man pumping gas",
+        "category": "fuel_logs"
+      },
+      {
+        "url": "https://images.pexels.com/photos/12377481/pexels-photo-12377481.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Fuel nozzle hand",
+        "category": "fuel_logs"
+      }
+    ],
+    "nfc_payment": [
+      {
+        "url": "https://images.pexels.com/photos/5239819/pexels-photo-5239819.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "NFC phone tap payment",
+        "category": "nfc_flow"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1556742031-c6961e8560b0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2ODh8MHwxfHNlYXJjaHwzfHxuZmMlMjBjYXJkJTIwcGhvbmUlMjB0YXAlMjBwYXltZW50fGVufDB8fHx8MTc4NDM3NDE0NXww&ixlib=rb-4.1.0&q=85",
+        "description": "Card swipe/tap",
+        "category": "nfc_flow"
+      }
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Load fonts (Manrope, IBM Plex Sans) via Google Fonts in index.html or define in CSS.",
+    "Install Phosphor icons: `yarn add @phosphor-icons/react`",
+    "Install Recharts for analytics visualization: `yarn add recharts`",
+    "Install Sonner for toast notifications: `yarn add sonner`",
+    "Use standard HTML `div` with Tailwind classes for layout structures instead of abstract wrapper components.",
+    "For the NFC Flow, simulate a real-time interaction: start with an idle state, show a pulsing/scanning animation when 'reading', then transition to success/validation view.",
+    "Place the North Star Metric (e.g., Total Fuel Consumption or Critical Alerts) at the top-left of the Dashboard.",
+    "In the Executive Dashboard, prioritize actionable data over decoration. Use progressive disclosure: show summaries first, details on click.",
+    "Customize Shadcn components heavily: remove default vercel looks by adjusting border-radius to 8px max and using 1px solid borders.",
+    "Ensure offline PWA capabilities are minimally mocked or structured if actual service workers aren't fully implemented in this phase.",
+    "Do NOT use HTML <input type='date'> or <select>. Always use Shadcn's specific robust components."
+  ],
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
+    "Do not center align the app container in App.css (.App { text-align: center; } must be removed if it exists).",
+    "Never use AI assistant emoji characters for icons.",
+    "Every interaction needs micro-animations (hover, transition, staggered entrance).",
+    "Use 2-3x more spacing than typical to avoid cramped UI.",
+    "Never use transparent backgrounds on headers or dropdowns. If content scrolls underneath, use Solid Background or Crystal Glass (backdrop-blur-xl).",
+    "Prioritize optical alignment over geometrical alignment.",
+    "No generic full-screen gradients. Focus on solid colors with high contrast typography.",
+    "Use Sonner for toasts located in /app/src/components/ui/sonner.tsx"
+  ]
+}
