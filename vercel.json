@@ -5,17 +5,18 @@
             "framework": "create-react-app"
         },
         "backend": {
-            "root": "backend"
+            "root": "backend",
+            "framework": "fastapi",
+            "entrypoint": "server.py"
         }
     },
     "rewrites": [
         {
             "source": "/api/(.*)",
-            "destination": "/api/$1"
-        },
-        {
-            "source": "/api",
-            "destination": "/api"
+            "destination": {
+                "type": "service",
+                "service": "backend"
+            }
         },
         {
             "source": "/(.*)",
