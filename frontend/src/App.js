@@ -1,53 +1,58 @@
 import { useEffect } from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-import { HOME } from "@/constants/testIds";
+import { AuthProvider } from "@/context/AuthContext";
+import { ProtectedRoute } from "@/context/ProtectedRoute";
+import Layout from "@/components/Layout";
+import LoginPage from "@/pages/Login";
+import Dashboard from "@/pages/Dashboard";
+import NewRefuel from "@/pages/NewRefuel";
+import RefuelsList from "@/pages/RefuelsList";
+import Vehicles from "@/pages/Vehicles";
+import Drivers from "@/pages/Drivers";
+import Stations from "@/pages/Stations";
+import Fuels from "@/pages/Fuels";
+import Users from "@/pages/Users";
+import Alerts from "@/pages/Alerts";
+import Audit from "@/pages/Audit";
+import Cards from "@/pages/Cards";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
+function App() {
   useEffect(() => {
-    helloWorldApi();
+    // Register basic service worker for PWA (fire-and-forget)
+    if ("serviceWorker" in navigator && process.env.NODE_ENV === "production") {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }
   }, []);
 
   return (
-    <div>
-      <header className="App-header">
-        <a
-          data-testid={HOME.emergentLink}
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
-
-function App() {
-  return (
     <div className="App">
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Layout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<Dashboard />} />
+              <Route path="refuel" element={<NewRefuel />} />
+              <Route path="refuels" element={<RefuelsList />} />
+              <Route path="vehicles" element={<Vehicles />} />
+              <Route path="drivers" element={<Drivers />} />
+              <Route path="stations" element={<Stations />} />
+              <Route path="fuels" element={<Fuels />} />
+              <Route path="users" element={<ProtectedRoute roles={["gestor"]}><Users /></ProtectedRoute>} />
+              <Route path="alerts" element={<Alerts />} />
+              <Route path="audit" element={<ProtectedRoute roles={["gestor", "auditor"]}><Audit /></ProtectedRoute>} />
+              <Route path="cards" element={<ProtectedRoute roles={["gestor", "auditor"]}><Cards /></ProtectedRoute>} />
+            </Route>
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </div>
   );

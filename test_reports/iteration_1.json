@@ -1,0 +1,49 @@
+{
+  "summary": "Backend-only testing of Frota NFC MVP. Executed 37 pytest tests covering auth, RBAC, vehicles, drivers, stations, fuels, NFC lookup, refuel flow (start/validate/create), heuristic fraud alerts, alert resolution, audit access control, users, dashboard summary, and delete endpoints. All 37 tests passed against the public backend URL (https://nfc-fleet-hub.preview.emergentagent.com).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/refuels", "issue": "Duplicate-detection heuristic uses EXACT liters equality within 10 minutes — a legitimate scenario of repeated identical top-ups is blocked as 'duplicado'. Consider a tighter time window (e.g. 2 min) or add tolerance/count threshold."},
+      {"endpoint": "POST /api/refuels", "issue": "Response detail for validation failure is a dict ({'errors': [...]}) instead of a string — FastAPI serializes it fine but some frontend error handlers expect string details. Consider standardising to `detail: 'msg'` + a `errors` field or 422-style structure."},
+      {"endpoint": "POST /api/nfc/lookup/{numero_cartao}", "issue": "Route exists but not listed in test_credentials.md example endpoints. Case-insensitive lookup works (backend uppercases input) — good."},
+      {"endpoint": "PUT /api/stations/{id}", "issue": "Does not raise 400 on empty update (unlike users/vehicles/drivers). Minor inconsistency — accepts and returns unchanged doc."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Consider tightening duplicate-refuel detection (10 min + exact-liters is too strict for legitimate flows).",
+    "Standardise refuel-create 400 error shape (currently `detail: {errors: [...]}`).",
+    "Optional: add index on nfc_cards.numero_cartao + tipo for faster lookups (currently just numero_cartao unique).",
+    "Optional: `require_roles` grants admin always — fine, but implicit; consider making explicit for readability."
+  ],
+  "critical_code_review_comments": [
+    "server.py is ~940 lines and mixes auth, CRUD, refuel, dashboard, alerts, audit. RECOMMEND splitting into routers/ subpackage (auth.py, vehicles.py, drivers.py, refuels.py, dashboard.py, alerts.py, audit.py) for maintainability.",
+    "Motor client is created lazily in deps.get_db(); consider using FastAPI lifespan for connection lifecycle + graceful shutdown.",
+    "MongoDB _id is consistently excluded via projection `{'_id': 0}` — GOOD.",
+    "bcrypt is used correctly with $2b$ salt; hash_password/verify_password work as expected.",
+    "JWT_SECRET properly loaded from env, no hardcoded fallbacks in code — GOOD.",
+    "Refuel validation loops over history to sum liters — fine for MVP but should use $sum aggregation at scale.",
+    "AES key derivation uses SHA-256 of NFC_AES_KEY env var — cryptographically OK.",
+    "fraud_ai.analyze_refuel_with_ai has proper try/except so LLM failures do not block refuel creation — GOOD.",
+    "CORS is set to `*` by default via env — acceptable for dev but should be restricted in prod.",
+    "No rate-limiting / brute-force lockout on /auth/login — playbook mentions 5-fails lockout; NOT IMPLEMENTED. Recommend adding a per-email counter with TTL."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py"
+  ],
+  "success_rate": {"backend": "100% (37/37)", "frontend": "N/A"},
+  "test_credentials": "admin@frotanfc.gov.br/admin123, gestor@frotanfc.gov.br/senha123, frentista@frotanfc.gov.br/senha123, auditor@frotanfc.gov.br/senha123 — all confirmed working",
+  "seed_data_creation": "Tests create ephemeral TEST_-prefixed vehicles/drivers/stations/users and clean up on teardown. Some may remain in DB from previous runs (best-effort cleanup).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "backend_test.py uses REACT_APP_BACKEND_URL from /app/frontend/.env. All 37 tests pass. Feature checklist from review request is fully covered: (1) auth login/me/invalid — OK; (2) all 4 seed users login — OK; (3) vehicle creation with auto NFC card + card visible in /nfc/cards — OK; (4) driver + NFC — OK; (5) station with combustiveis — OK; (6) RBAC frentista blocked, gestor allowed — OK; (7) NFC lookup + refuels/start with preco_sugerido — OK; (8) refuels/validate: inactive/km_less/wrong_fuel/valid/expired-CNH — all OK; (9) refuels create with valor_total & autonomia + updates vehicle km — OK; (10) refuels 400 on validation fail — OK; (11) refuels list filters — OK; (12) dashboard summary shape (all keys present) — OK; (13) aumento_repentino_consumo alert — OK (avg-based heuristic triggers as expected); (14) alerts/{id}/resolve gated to admin/gestor — OK; (15) audit gated to admin/gestor/auditor, frentista 403 — OK; (16) 5 seed fuels — OK; (17) admin creates user, frentista 403 — OK; (18) DELETEs for vehicle/driver/station/user — OK; (19) CNH vencida bloqueia validate — OK. Frontend not tested (backend-only request).",
+  "rca_of_the_issue": "No blocking issues found. One self-inflicted test flake (duplicate-refuel detection triggering when using identical liters) was fixed by varying liters across the seeding refuels."
+}
