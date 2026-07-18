@@ -20,15 +20,15 @@ import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
 
 const NAV = [
-  { to: "/", label: "Dashboard", icon: Gauge, tid: "nav-dashboard", roles: null },
+  { to: "/", label: "Dashboard", icon: Gauge, tid: "nav-dashboard", roles: null, hideFor: ["frentista"] },
   { to: "/refuel", label: "Novo Abastecimento", icon: Lightning, tid: "nav-refuel", roles: ["frentista", "gestor"] },
-  { to: "/refuels", label: "Abastecimentos", icon: GasPump, tid: "nav-refuels", roles: null },
-  { to: "/vehicles", label: "Veículos", icon: Truck, tid: "nav-vehicles", roles: null },
-  { to: "/drivers", label: "Motoristas", icon: IdentificationCard, tid: "nav-drivers", roles: null },
-  { to: "/stations", label: "Postos", icon: Buildings, tid: "nav-stations", roles: null },
-  { to: "/fuels", label: "Combustíveis", icon: GasPump, tid: "nav-fuels", roles: null },
+  { to: "/refuels", label: "Abastecimentos", icon: GasPump, tid: "nav-refuels", roles: null, hideFor: ["frentista"] },
+  { to: "/vehicles", label: "Veículos", icon: Truck, tid: "nav-vehicles", roles: null, hideFor: ["frentista"] },
+  { to: "/drivers", label: "Motoristas", icon: IdentificationCard, tid: "nav-drivers", roles: null, hideFor: ["frentista"] },
+  { to: "/stations", label: "Postos", icon: Buildings, tid: "nav-stations", roles: null, hideFor: ["frentista"] },
+  { to: "/fuels", label: "Combustíveis", icon: GasPump, tid: "nav-fuels", roles: null, hideFor: ["frentista"] },
   { to: "/cards", label: "Cartões NFC", icon: CreditCard, tid: "nav-cards", roles: ["gestor", "auditor"] },
-  { to: "/alerts", label: "Alertas", icon: BellRinging, tid: "nav-alerts", roles: null },
+  { to: "/alerts", label: "Alertas", icon: BellRinging, tid: "nav-alerts", roles: null, hideFor: ["frentista"] },
   { to: "/users", label: "Usuários", icon: Users, tid: "nav-users", roles: ["gestor"] },
   { to: "/audit", label: "Auditoria", icon: ClipboardText, tid: "nav-audit", roles: ["gestor", "auditor"] },
 ];
@@ -43,7 +43,10 @@ export default function Layout() {
     navigate("/login");
   };
 
-  const visible = NAV.filter((n) => !n.roles || hasRole(...n.roles));
+  const visible = NAV.filter((n) => {
+    if (n.hideFor && user && n.hideFor.includes(user.role)) return false;
+    return !n.roles || hasRole(...n.roles);
+  });
 
   return (
     <div className="min-h-screen bg-slate-50 flex" data-testid="app-layout">

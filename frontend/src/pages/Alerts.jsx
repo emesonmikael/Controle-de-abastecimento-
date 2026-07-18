@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { WarningCircle, CheckCircle, Sparkle } from "@phosphor-icons/react";
+import { WarningCircle, CheckCircle } from "@phosphor-icons/react";
 import { useAuth } from "@/context/AuthContext";
 
 const SEV = {
@@ -42,7 +42,7 @@ export default function Alerts() {
     <div className="space-y-6" data-testid="alerts-page">
       <PageHeader
         title="Alertas & Fraudes"
-        description="Alertas gerados por regras e pela IA de detecção de anomalias."
+        description="Alertas gerados por regras automáticas de auditoria."
       />
 
       <Tabs value={tab} onValueChange={setTab}>
@@ -61,13 +61,12 @@ export default function Alerts() {
                 <Card key={a.id} className="rise" data-testid={`alert-${a.id}`}>
                   <CardContent className="p-5 flex items-start gap-4">
                     <div className={`h-9 w-9 rounded-md grid place-items-center shrink-0 ${SEV[a.severidade] || SEV.info}`}>
-                      {a.ia_gerado ? <Sparkle size={18} weight="fill" /> : <WarningCircle size={18} weight="fill" />}
+                      <WarningCircle size={18} weight="fill" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-semibold text-slate-900">{a.tipo.replace(/_/g, " ")}</span>
                         <Badge className={SEV[a.severidade] || SEV.info}>{a.severidade}</Badge>
-                        {a.ia_gerado && <Badge className="bg-purple-100 text-purple-800">IA</Badge>}
                       </div>
                       <div className="text-sm text-slate-700 mt-1">{a.mensagem}</div>
                       {a.contexto?.reasons?.length > 0 && (

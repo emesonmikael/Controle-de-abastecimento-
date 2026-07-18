@@ -16,6 +16,15 @@ import Users from "@/pages/Users";
 import Alerts from "@/pages/Alerts";
 import Audit from "@/pages/Audit";
 import Cards from "@/pages/Cards";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+
+/** Frentista lands on /refuel; others on Dashboard. */
+const HomeRoute = () => {
+  const { user } = useAuth();
+  if (user?.role === "frentista") return <Navigate to="/refuel" replace />;
+  return <Dashboard />;
+};
 
 function App() {
   useEffect(() => {
@@ -39,15 +48,15 @@ function App() {
                 </ProtectedRoute>
               }
             >
-              <Route index element={<Dashboard />} />
+              <Route index element={<HomeRoute />} />
               <Route path="refuel" element={<NewRefuel />} />
-              <Route path="refuels" element={<RefuelsList />} />
-              <Route path="vehicles" element={<Vehicles />} />
-              <Route path="drivers" element={<Drivers />} />
-              <Route path="stations" element={<Stations />} />
-              <Route path="fuels" element={<Fuels />} />
+              <Route path="refuels" element={<ProtectedRoute roles={["gestor", "auditor"]}><RefuelsList /></ProtectedRoute>} />
+              <Route path="vehicles" element={<ProtectedRoute roles={["gestor", "auditor"]}><Vehicles /></ProtectedRoute>} />
+              <Route path="drivers" element={<ProtectedRoute roles={["gestor", "auditor"]}><Drivers /></ProtectedRoute>} />
+              <Route path="stations" element={<ProtectedRoute roles={["gestor", "auditor"]}><Stations /></ProtectedRoute>} />
+              <Route path="fuels" element={<ProtectedRoute roles={["gestor", "auditor"]}><Fuels /></ProtectedRoute>} />
               <Route path="users" element={<ProtectedRoute roles={["gestor"]}><Users /></ProtectedRoute>} />
-              <Route path="alerts" element={<Alerts />} />
+              <Route path="alerts" element={<ProtectedRoute roles={["gestor", "auditor"]}><Alerts /></ProtectedRoute>} />
               <Route path="audit" element={<ProtectedRoute roles={["gestor", "auditor"]}><Audit /></ProtectedRoute>} />
               <Route path="cards" element={<ProtectedRoute roles={["gestor", "auditor"]}><Cards /></ProtectedRoute>} />
             </Route>

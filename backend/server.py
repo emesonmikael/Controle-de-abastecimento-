@@ -53,7 +53,7 @@ from security import (
     generate_nfc_token,
 )
 from deps import get_db, get_current_user, require_roles, log_audit
-from fraud_ai import heuristic_fraud_checks, analyze_refuel_with_ai
+from fraud_ai import heuristic_fraud_checks
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("frota_nfc")
@@ -701,22 +701,6 @@ async def create_refuel(payload: RefuelCreate, request: Request, user: dict = De
         h.pop("_id", None)
 
     alerts = heuristic_fraud_checks(doc, history, vehicle)
-
-    # Kick off AI analysis (best-effort, don't block on failure)
-    try:
-        ai_result = await analyze_refuel_with_ai(doc, history, vehicle)
-        if ai_result and ai_result.get("suspicious") and ai_result.get("risk_score", 0) >= 60:
-            alerts.append(
-                {
-                    "tipo": "ia_deteccao_fraude",
-                    "severidade": "critical" if ai_result.get("risk_score", 0) >= 80 else "warning",
-                    "mensagem": ai_result.get("summary", "Padrão suspeito detectado pela IA"),
-                    "ia_gerado": True,
-                    "contexto": {"risk_score": ai_result.get("risk_score"), "reasons": ai_result.get("reasons", [])},
-                }
-            )
-    except Exception as e:  # noqa: BLE001
-        logger.exception("AI analysis error: %s", e)
 
     for a in alerts:
         await db.alerts.insert_one(

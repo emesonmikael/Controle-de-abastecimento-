@@ -61,11 +61,11 @@ export default function LoginPage() {
           <h1 className="text-4xl lg:text-5xl font-bold leading-tight">
             Abastecimento auditável
             <br />
-            com <span className="text-blue-400">NFC + IA</span>.
+            com <span className="text-blue-400">NFC</span>.
           </h1>
           <p className="text-slate-300 max-w-md text-base">
-            Controle total da frota municipal — cadastro de veículos, cartões NFC criptografados, validações
-            em tempo real e detecção de fraudes por IA.
+            Controle total da frota municipal — cadastro de veículos, cartões NFC criptografados,
+            validações em tempo real e regras automáticas anti-fraude.
           </p>
           <div className="grid grid-cols-2 gap-3 max-w-md">
             <div className="border border-slate-700 rounded-lg p-4">

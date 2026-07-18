@@ -1,0 +1,42 @@
+{
+  "summary": "Iteration 2: regression + targeted verification of BUG FIX 1 (frentista sidebar & redirect) and BUG FIX 2 (AI fraud detection removed). Backend: 42/42 tests passed (37 pre-existing + 5 new in test_ai_removed.py). Frontend: full flow validated with Playwright — frentista redirected to /refuel, sidebar shows only nav-refuel, direct URL access to /vehicles and /alerts shows forbidden page; admin/gestor/auditor unaffected. AI removal confirmed: no new ia_gerado=true alerts are created after refuel; heuristic rules 'aumento_repentino_consumo' and 'abastecimentos_frequentes' still trigger correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET /api/alerts", "issue": "9 legacy alerts with ia_gerado=true and tipo='ia_deteccao_fraude' remain in DB from before the AI removal fix. Not blocking (no new ones are being created), but frontend Alerts screen still shows them. Consider a one-time cleanup migration or a filter to hide legacy IA alerts."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/backend/tests/test_ai_removed.py",
+    "/app/test_reports/pytest/pytest_results.xml",
+    "/app/test_reports/pytest/pytest_ai_removed.xml"
+  ],
+  "action_items": [
+    "OPTIONAL: cleanup or hide the 9 legacy IA alerts (tipo='ia_deteccao_fraude' / ia_gerado=true) so the Alerts screen isn't polluted by pre-fix data. E.g. one-off script: db.alerts.deleteMany({tipo:'ia_deteccao_fraude'}) or a UI filter.",
+    "OPTIONAL: remove now-unused function analyze_refuel_with_ai from /app/backend/fraud_ai.py (still defined but never imported) to reduce dead code."
+  ],
+  "critical_code_review_comments": [
+    "server.py no longer imports analyze_refuel_with_ai — good, AI removal is effective at the call site (line 56 & 703).",
+    "fraud_ai.py still defines analyze_refuel_with_ai (dead code). Recommend deleting for cleanliness.",
+    "Layout.jsx cleanly hides items via `hideFor: ['frentista']`; NAV visibility filter (line 46-49) works correctly.",
+    "App.js HomeRoute cleanly redirects frentista to /refuel (line 25).",
+    "ProtectedRoute correctly renders forbidden page for role mismatch (data-testid='forbidden').",
+    "Alerts stored with ia_gerado defaulting to False in heuristic path — GOOD."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_ai_removed.py (new file — 5 tests)"
+  ],
+  "success_rate": {"backend": "100% (42/42)", "frontend": "100% (all 4 role logins + forbidden checks pass)"},
+  "test_credentials": "admin@frotanfc.gov.br/admin123, gestor@frotanfc.gov.br/senha123, frentista@frotanfc.gov.br/senha123, auditor@frotanfc.gov.br/senha123 — all working",
+  "seed_data_creation": "Tests create ephemeral TEST_-prefixed vehicles (AI*/HR*/FQ*) with cleanup via DELETE. Some may remain due to best-effort cleanup on failure.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "BUG FIX 1 (frontend RBAC frentista): fully validated via Playwright — frentista sidebar shows only nav-refuel, forbidden page displayed on direct URL to /vehicles /alerts /drivers etc., HomeRoute redirects / to /refuel. BUG FIX 2 (AI removal): validated via new test file /app/backend/tests/test_ai_removed.py — no new ia_gerado=true alerts after refuel, heuristics 'aumento_repentino_consumo' and 'abastecimentos_frequentes' still trigger. Legacy IA alerts remain in DB (9 items, all >5min old); reported as minor cleanup item. Backend regression suite (37 tests) still green.",
+  "rca_of_the_issue": "N/A — both fixes verified working. The only residual issue is DB-level: pre-fix ia_gerado=true alerts persist; a one-time cleanup query would resolve."
+}
