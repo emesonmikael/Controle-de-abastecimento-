@@ -1,4 +1,7 @@
-{
+"services"
+:
+ 
+{{
   "version": 2,
   "rewrites": [
     {
@@ -28,4 +31,5 @@
       "config": { "distDir": "build" }
     }
   ]
+}
 }
