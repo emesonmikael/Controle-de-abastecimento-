@@ -3,9 +3,7 @@
         "frontend": {
             "root": "frontend",
             "framework": "create-react-app",
-            "installCommand": "npm install --legacy-peer-deps && npm install ajv ajv-keywords",
-            "buildCommand": "CI=false npm run build",
-            "nodeVersion": "20.x"
+            "installCommand": "npm install --legacy-peer-deps && npm install ajv ajv-keywords"
         },
         "backend": {
             "root": "backend",
